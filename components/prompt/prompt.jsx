@@ -28,8 +28,12 @@ export default function Prompt(props) {
       e.target.value = ""
     }
 
+    // DEBUG
+    // console.log(parsedKey)
+
     // Check custom keybinds
     if (props.keybinds && props.keybinds[parsedKey]) {
+      e.preventDefault()
       props.keybinds[parsedKey]()
     }
   }, [])
