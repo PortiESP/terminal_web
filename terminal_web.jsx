@@ -15,7 +15,6 @@ export default function TerminalWeb(props) {
   return (
     <div className={scss.wrapper} onClick={() => $prompt.current.focus()}>
       <Lines lines={history}></Lines>
-
       <Prompt
         callback={appendHistory}
         keybinds={binds}

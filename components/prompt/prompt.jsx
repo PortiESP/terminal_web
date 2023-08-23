@@ -1,4 +1,5 @@
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
+import scss from "./prompt.module.scss"
 
 /**
  * This component will create an input where we can run callbacks based on custom keybinds, the ENTER key have a dedicated props for its event as `callback`
@@ -20,31 +21,62 @@ import { useCallback } from "react"
  * 
  */
 export default function Prompt(props) {
-  const handleKeyEvent = useCallback((e) => {
-    const parsedKey = keyEvent2String(e)
+  const [input, setInput] = useState("")
+  const [caretOffset, setCaretOffset] = useState(0)
 
-    if (parsedKey === "enter") {
-      props.callback(e.target.value)
-      e.target.value = ""
-    }
+  const handleKeyEvent = useCallback(
+    (e) => {
+      const parsedKey = keyEvent2String(e)
 
-    // DEBUG
-    // console.log(parsedKey)
+      switch (parsedKey) {
+        case "enter":
+          props.callback(e.target.value)
+          setInput("")
+          setCaretOffset(0)
+          break
+        case "arrowleft":
+          setCaretOffset((old) => (old < input.length ? old + 1 : old))
+          break
+        case "arrowright":
+          setCaretOffset((old) => (old > 0 ? old - 1 : 0))
+          break
 
-    // Check custom keybinds
-    if (props.keybinds && props.keybinds[parsedKey]) {
-      e.preventDefault()
-      props.keybinds[parsedKey]()
-    }
-  }, [])
+        default:
+          break
+      }
+
+      // DEBUG
+      // console.log(parsedKey)
+
+      // Check custom keybinds
+      if (props.keybinds && props.keybinds[parsedKey]) {
+        e.preventDefault()
+        props.keybinds[parsedKey]()
+      }
+    },
+    [input, caretOffset]
+  )
 
   return (
-    <div>
-      <pre>
-        {props.prefix}
-        <input onKeyDown={handleKeyEvent} ref={props.inputRef} />
-      </pre>
-    </div>
+    <pre className={scss.prompt}>
+      <span style={{ order: -1 }}>{props.prefix}</span>
+      <input
+        onKeyDown={handleKeyEvent}
+        ref={props.inputRef}
+        autoFocus={true}
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+      ></input>
+      {input.split("").map((letter, i) => (
+        <span key={i} style={{ order: i }}>
+          {letter}
+        </span>
+      ))}
+      <span
+        className={scss.caret}
+        style={{ order: input.length - caretOffset - 1 }}
+      />
+    </pre>
   )
 }
 

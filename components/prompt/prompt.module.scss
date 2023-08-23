@@ -1,0 +1,29 @@
+@import "../../themes/theme1";
+
+.prompt {
+  color: $promptPrefix;
+  display: flex;
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+.prompt input {
+  opacity: 0;
+  position: absolute;
+}
+
+.prompt .caret {
+  position: relative;
+  animation: blink 1s infinite step-end;
+  margin-right: 1px;
+}
+
+@keyframes blink {
+  from,
+  to {
+    border-right: $caretWidth solid $caretColor;
+  }
+  50% {
+    border-right: $caretWidth solid transparent;
+  }
+}

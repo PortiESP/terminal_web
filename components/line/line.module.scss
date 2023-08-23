@@ -1,0 +1,8 @@
+@import "../../themes/theme1";
+
+.line pre {
+  color: $text;
+  width: 100%;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
