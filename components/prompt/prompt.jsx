@@ -1,7 +1,7 @@
 import { useCallback } from "react"
 
 /**
- * This component will create an input where we can run callbacks based on custom keybinds
+ * This component will create an input where we can run callbacks based on custom keybinds, the ENTER key have a dedicated props for its event as `callback`
  *
  * @param {*} props
  * @param {String||JSXElement} props.prefix - Information printed before the prompt input (same line)
@@ -22,13 +22,13 @@ export default function Prompt(props) {
   const handleKeyEvent = useCallback((e) => {
     const parsedKey = keyEvent2String(e)
 
-    if (parsedKey === "Enter" && e.target.value) {
+    if (parsedKey === "enter" && e.target.value) {
       props.callback(e.target.value)
       e.target.value = ""
     }
 
     // Check custom keybinds
-    if (props.keybinds[parsedKey]) {
+    if (props.keybinds && props.keybinds[parsedKey]) {
       props.keybinds[parsedKey]()
     }
   }, [])
