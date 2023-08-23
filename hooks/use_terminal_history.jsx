@@ -14,7 +14,7 @@ export default function useTerminalHistory(initial) {
 
   //  Methods
   const appendHistory = useCallback(
-    (input) => setHistory((old) => [...old, input]),
+    (input) => setHistory((old) => [...old, input || " "]),
     []
   )
 

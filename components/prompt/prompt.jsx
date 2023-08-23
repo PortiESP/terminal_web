@@ -7,6 +7,7 @@ import { useCallback } from "react"
  * @param {String||JSXElement} props.prefix - Information printed before the prompt input (same line)
  * @param {Function} props.callback - Function called when the user presses the ENTER key
  * @param {Object} props.keybinds - Custom keybinds object. The keys correspond to the keybind, and the value must be a callback function
+ * @param {Ref} props.inputRef - 
  * @returns {JSXElement}
  * 
  * Example of the keybinds object
@@ -22,7 +23,7 @@ export default function Prompt(props) {
   const handleKeyEvent = useCallback((e) => {
     const parsedKey = keyEvent2String(e)
 
-    if (parsedKey === "enter" && e.target.value) {
+    if (parsedKey === "enter") {
       props.callback(e.target.value)
       e.target.value = ""
     }
@@ -37,7 +38,7 @@ export default function Prompt(props) {
     <div>
       <pre>
         {props.prefix}
-        <input onKeyDown={handleKeyEvent} />
+        <input onKeyDown={handleKeyEvent} ref={props.inputRef} />
       </pre>
     </div>
   )
