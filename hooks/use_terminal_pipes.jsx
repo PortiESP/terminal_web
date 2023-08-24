@@ -9,17 +9,17 @@ import { useCallback, useState } from "react"
  *  - appendHistory {Function} - Add a new entry in the history array
  *  - clearHistory {Function} - Empty the history
  */
-export default function useTerminalHistory(initial) {
-  const [history, setHistory] = useState(initial || [])
+export default function useTerminalPipes(initial) {
+  const [stdout, setStdout] = useState(initial || [])
 
   //  Methods
-  const appendHistory = useCallback((input) => setHistory((old) => [...old, input || " "]), [])
+  const stdin = useCallback((input) => setStdout((old) => [...old, input || " "]), [])
 
-  const clearHistory = useCallback(() => setHistory(() => []), [])
+  const cleanStdout = useCallback(() => setStdout(() => []), [])
 
   return {
-    history,
-    appendHistory,
-    clearHistory,
+    stdout,
+    stdin,
+    cleanStdout,
   }
 }

@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef } from "react"
+import { useCallback, useState, useRef, useEffect } from "react"
 import scss from "./prompt.module.scss"
 import useTimer from "../../hooks/use_timer"
 
@@ -23,37 +23,48 @@ import useTimer from "../../hooks/use_timer"
  */
 export default function Prompt(props) {
   const [input, setInput] = useState("")
+  const [history, setHistory] = useState(["test"])
+  const [historyCursor, setHistoryCursor] = useState(-1)
   const $caret = useRef(null)
   const { setTimer } = useTimer()
+  const [caretOffset, setCaretOffset] = useState(0)
 
-  const promptLen = () => input.concat(props.prefix).length
-
-  const [caretOffset, setCaretOffset] = useState(promptLen() - 1)
-
+  // Handle kbd events
   const handleKeyEvent = useCallback(
     (e) => {
       const parsedKey = keyEvent2String(e)
+      const inputValue = e.target.value
       // DEBUG
       // console.log(parsedKey)
 
       switch (parsedKey) {
         case "enter":
           props.callback(e.target.value)
+          setHistory((old) => [e.target.value, ...old])
+          setHistoryCursor(-1)
           setInput("")
-          setCaretOffset(promptLen() - 1)
+          setCaretOffset(0)
           break
         case "arrowleft":
-          setCaretOffset((old) => (old > props.prefix.length - 1 ? old - 1 : old))
+          setCaretOffset((old) => (old > 0 - inputValue.length ? old - 1 : old))
           break
         case "arrowright":
-          setCaretOffset((old) => (old < promptLen() - 1 ? old + 1 : old))
+          setCaretOffset((old) => (old < 0 ? old + 1 : old))
+          break
+        case "arrowup":
+          setHistoryCursor((old) => (old < history.length - 1 ? old + 1 : old))
+          setCaretOffset(0)
+          break
+        case "arrowdown":
+          setHistoryCursor((old) => (old > -1 ? old - 1 : old))
+          setCaretOffset(0)
           break
 
         default:
           $caret.current.classList.add(scss.flag__caret_static)
           setTimer(() => {
             $caret.current.classList.remove(scss.flag__caret_static)
-          }, 400)
+          }, 1000)
           break
       }
 
@@ -63,8 +74,13 @@ export default function Prompt(props) {
         props.keybinds[parsedKey]()
       }
     },
-    [input]
+    [input, historyCursor]
   )
+
+  useEffect(() => {
+    if (historyCursor > -1) setInput(history[historyCursor])
+    else setInput("")
+  }, [historyCursor])
 
   return (
     <pre className={scss.prompt}>
@@ -76,21 +92,17 @@ export default function Prompt(props) {
         value={input}
         onChange={(e) => {
           setInput(e.target.value)
-          setCaretOffset((old) => old + 1)
         }}
-      ></input>
+      />
       {input.split("").map((letter, i) => (
         <span key={i}>{letter}</span>
       ))}
       <div className={scss.div__layer_caret}>
-        {input
-          .concat(props.prefix)
-          .split("")
-          .map((_, i) => (
-            <pre key={i} style={{ order: i }}>
-              {" "}
-            </pre>
-          ))}
+        {(input + props.prefix).split("").map((_, i) => (
+          <pre key={i} style={{ order: 0 - (input + props.prefix).length + i + 1 }}>
+            {" "}
+          </pre>
+        ))}
         <span className={scss.caret} style={{ order: caretOffset }} ref={$caret} />
       </div>
     </pre>
