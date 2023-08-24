@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import scss from "./line.module.scss"
 
-export default function DelayedLine(props) {
+export default function AsyncLines(props) {
   const [progress, setProgress] = useState("")
 
   useEffect(() => {

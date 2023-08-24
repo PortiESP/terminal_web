@@ -36,7 +36,7 @@ export default function Prompt(props) {
       const inputValue = e.target.value
 
       // DEBUG
-      console.log(parsedKey)
+      // console.log(parsedKey)
 
       switch (parsedKey) {
         case "enter":
@@ -64,7 +64,6 @@ export default function Prompt(props) {
           setCaretOffset(0)
           break
         case "home":
-          console.log(0 - inputValue.length)
           setCaretOffset(0 - inputValue.length)
           break
 
