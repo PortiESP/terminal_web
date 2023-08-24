@@ -1,5 +1,6 @@
-import { useCallback, useState } from "react"
+import { useCallback, useState, useRef } from "react"
 import scss from "./prompt.module.scss"
+import useTimer from "../../hooks/use_timer"
 
 /**
  * This component will create an input where we can run callbacks based on custom keybinds, the ENTER key have a dedicated props for its event as `callback`
@@ -22,6 +23,8 @@ import scss from "./prompt.module.scss"
  */
 export default function Prompt(props) {
   const [input, setInput] = useState("")
+  const $caret = useRef(null)
+  const { setTimer } = useTimer()
 
   const promptLen = () => input.concat(props.prefix).length
 
@@ -47,6 +50,10 @@ export default function Prompt(props) {
           break
 
         default:
+          $caret.current.classList.add(scss.flag__caret_static)
+          setTimer(() => {
+            $caret.current.classList.remove(scss.flag__caret_static)
+          }, 300)
           break
       }
 
@@ -87,7 +94,11 @@ export default function Prompt(props) {
               {" "}
             </pre>
           ))}
-        <span className={scss.caret} style={{ order: caretOffset }} />
+        <span
+          className={scss.caret}
+          style={{ order: caretOffset }}
+          ref={$caret}
+        />
       </div>
     </pre>
   )

@@ -17,12 +17,25 @@
   & .caret {
     position: relative;
     animation: blink 1s infinite step-end;
+
     border-right: $caretWidth solid $caretColor;
     margin-right: 1px;
+
+    // Static
+    &.flag__caret_static::after {
+      content: " ";
+      width: $caretWidth;
+      background: $caretColor;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
   }
 
   & .div__layer_caret {
     display: flex;
+    max-width: 100%;
+    flex-wrap: wrap;
     position: absolute;
     top: 0;
     left: 0;
