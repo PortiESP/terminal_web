@@ -33,6 +33,8 @@ export default function Prompt(props) {
   const handleKeyEvent = useCallback(
     (e) => {
       const parsedKey = keyEvent2String(e)
+      // DEBUG
+      // console.log(parsedKey)
 
       switch (parsedKey) {
         case "enter":
@@ -53,12 +55,9 @@ export default function Prompt(props) {
           $caret.current.classList.add(scss.flag__caret_static)
           setTimer(() => {
             $caret.current.classList.remove(scss.flag__caret_static)
-          }, 300)
+          }, 400)
           break
       }
-
-      // DEBUG
-      // console.log(parsedKey)
 
       // Check custom keybinds
       if (props.keybinds && props.keybinds[parsedKey]) {

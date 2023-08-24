@@ -10,7 +10,9 @@ import { useCallback, useState } from "react"
  *  - clearHistory {Function} - Empty the history
  */
 export default function useTerminalHistory(initial) {
-  const [history, setHistory] = useState(initial || [])
+  const [history, setHistory] = useState(
+    initial?.map((e) => ({ input: e })) || []
+  )
 
   //  Methods
   const appendHistory = useCallback(
