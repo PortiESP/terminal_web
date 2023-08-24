@@ -4,8 +4,8 @@ export default function Lines(props) {
   return (
     <>
       {props.lines.map((line, i) => (
-        <Line key={i} prefix={line.prefix}>
-          {line.input}
+        <Line key={i} prefix={props.prefix}>
+          {line}
         </Line>
       ))}
     </>

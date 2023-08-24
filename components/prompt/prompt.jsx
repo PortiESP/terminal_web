@@ -43,9 +43,7 @@ export default function Prompt(props) {
           setCaretOffset(promptLen() - 1)
           break
         case "arrowleft":
-          setCaretOffset((old) =>
-            old > props.prefix.length - 1 ? old - 1 : old
-          )
+          setCaretOffset((old) => (old > props.prefix.length - 1 ? old - 1 : old))
           break
         case "arrowright":
           setCaretOffset((old) => (old < promptLen() - 1 ? old + 1 : old))
@@ -93,11 +91,7 @@ export default function Prompt(props) {
               {" "}
             </pre>
           ))}
-        <span
-          className={scss.caret}
-          style={{ order: caretOffset }}
-          ref={$caret}
-        />
+        <span className={scss.caret} style={{ order: caretOffset }} ref={$caret} />
       </div>
     </pre>
   )

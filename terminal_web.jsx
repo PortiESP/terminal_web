@@ -1,41 +1,30 @@
 import scss from "./terminal_web.module.scss"
 import useTerminalHistory from "./hooks/use_terminal_history"
 import Lines from "./components/line/lines"
-import Color from "./components/color/color"
 import Prompt from "./components/prompt/prompt"
-import { useRef } from "react"
-import art from "../../assets/0xporti_pixel_art"
-import Line from "./components/line/line"
+import { useCallback, useRef } from "react"
+import useTerminalCommands from "./hooks/use_terminal_commands"
 
 export default function TerminalWeb(props) {
-  const { history, appendHistory, clearHistory } = useTerminalHistory([
-    "",
-    ...art,
-    "",
-    "",
-    <Line> [i] Please, type one of the following commands</Line>,
-    <Line>
-      {" "}
-      [i] Use <Color hex="4444ff">CTRL+L</Color> to clear the screen
-    </Line>,
-    "",
-  ])
+  const { history, appendHistory, clearHistory } = useTerminalHistory(props.initialMessage)
+  const { run } = useTerminalCommands(props.commands, appendHistory)
   const $prompt = useRef(null)
-  const prefix = "Exter input here >>> "
 
+  // Setting keybinds
   const binds = {
     ctrl_l: clearHistory,
   }
 
+  // ENTER Callback
+  const enterCallback = useCallback((input) => {
+    appendHistory(props.prefix + input)
+    run(input)
+  }, [])
+
   return (
     <div className={scss.wrapper} onClick={() => $prompt.current.focus()}>
       <Lines lines={history}></Lines>
-      <Prompt
-        callback={(input) => appendHistory({ prefix, input })}
-        keybinds={binds}
-        prefix={prefix}
-        inputRef={$prompt}
-      />
+      <Prompt callback={enterCallback} keybinds={binds} prefix={props.prefix} inputRef={$prompt} />
     </div>
   )
 }
