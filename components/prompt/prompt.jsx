@@ -22,7 +22,10 @@ import scss from "./prompt.module.scss"
  */
 export default function Prompt(props) {
   const [input, setInput] = useState("")
-  const [caretOffset, setCaretOffset] = useState(0)
+
+  const promptLen = () => input.concat(props.prefix).length
+
+  const [caretOffset, setCaretOffset] = useState(promptLen() - 1)
 
   const handleKeyEvent = useCallback(
     (e) => {
@@ -32,13 +35,15 @@ export default function Prompt(props) {
         case "enter":
           props.callback(e.target.value)
           setInput("")
-          setCaretOffset(0)
+          setCaretOffset(promptLen() - 1)
           break
         case "arrowleft":
-          setCaretOffset((old) => (old < input.length ? old + 1 : old))
+          setCaretOffset((old) =>
+            old > props.prefix.length - 1 ? old - 1 : old
+          )
           break
         case "arrowright":
-          setCaretOffset((old) => (old > 0 ? old - 1 : 0))
+          setCaretOffset((old) => (old < promptLen() - 1 ? old + 1 : old))
           break
 
         default:
@@ -54,28 +59,36 @@ export default function Prompt(props) {
         props.keybinds[parsedKey]()
       }
     },
-    [input, caretOffset]
+    [input]
   )
 
   return (
     <pre className={scss.prompt}>
-      <span style={{ order: -1 }}>{props.prefix}</span>
+      <span>{props.prefix}</span>
       <input
         onKeyDown={handleKeyEvent}
         ref={props.inputRef}
         autoFocus={true}
         value={input}
-        onChange={(e) => setInput(e.target.value)}
+        onChange={(e) => {
+          setInput(e.target.value)
+          setCaretOffset((old) => old + 1)
+        }}
       ></input>
       {input.split("").map((letter, i) => (
-        <span key={i} style={{ order: i }}>
-          {letter}
-        </span>
+        <span key={i}>{letter}</span>
       ))}
-      <span
-        className={scss.caret}
-        style={{ order: input.length - caretOffset - 1 }}
-      />
+      <div className={scss.div__layer_caret}>
+        {input
+          .concat(props.prefix)
+          .split("")
+          .map((_, i) => (
+            <pre key={i} style={{ order: i }}>
+              {" "}
+            </pre>
+          ))}
+        <span className={scss.caret} style={{ order: caretOffset }} />
+      </div>
     </pre>
   )
 }

@@ -1,21 +1,32 @@
 @import "../../themes/theme1";
 
 .prompt {
+  position: relative;
   color: $promptPrefix;
   display: flex;
   max-width: 100%;
   flex-wrap: wrap;
+
+  & input {
+    opacity: 0;
+    position: absolute;
+  }
 }
 
-.prompt input {
-  opacity: 0;
-  position: absolute;
-}
+.prompt {
+  & .caret {
+    position: relative;
+    animation: blink 1s infinite step-end;
+    border-right: $caretWidth solid $caretColor;
+    margin-right: 1px;
+  }
 
-.prompt .caret {
-  position: relative;
-  animation: blink 1s infinite step-end;
-  margin-right: 1px;
+  & .div__layer_caret {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
 }
 
 @keyframes blink {
