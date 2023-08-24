@@ -34,13 +34,14 @@ export default function Prompt(props) {
     (e) => {
       const parsedKey = keyEvent2String(e)
       const inputValue = e.target.value
+
       // DEBUG
-      // console.log(parsedKey)
+      console.log(parsedKey)
 
       switch (parsedKey) {
         case "enter":
-          props.callback(e.target.value)
-          setHistory((old) => [e.target.value, ...old])
+          props.callback(inputValue)
+          setHistory((old) => [inputValue, ...old])
           setHistoryCursor(-1)
           setInput("")
           setCaretOffset(0)
@@ -58,6 +59,13 @@ export default function Prompt(props) {
         case "arrowdown":
           setHistoryCursor((old) => (old > -1 ? old - 1 : old))
           setCaretOffset(0)
+          break
+        case "end":
+          setCaretOffset(0)
+          break
+        case "home":
+          console.log(0 - inputValue.length)
+          setCaretOffset(0 - inputValue.length)
           break
 
         default:
@@ -77,6 +85,7 @@ export default function Prompt(props) {
     [input, historyCursor]
   )
 
+  // Fill the input with the corresponding command from history when the history cursor is changed
   useEffect(() => {
     if (historyCursor > -1) setInput(history[historyCursor])
     else setInput("")
