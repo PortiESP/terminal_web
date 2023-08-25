@@ -18,16 +18,21 @@ export default function TerminalWeb(props) {
 
   // ENTER Callback
   const enterCallback = useCallback((input) => {
-    stdin(props.prefix + input)
+    stdin(
+      <span className={scss.flag__old_prompt}>
+        {props.prefix}
+        {input}
+      </span>
+    )
     run(input)
   }, [])
 
   useEffect(() => {
-    $terminal.current.scrollTo(0, 999999)
+    $terminal.current.scrollBy(0, 999999)
   }, [stdout])
 
   return (
-    <div className={scss.wrapper} onClick={() => $prompt.current.focus()} ref={$terminal}>
+    <div className={scss.wrapper} onClick={() => $prompt.current.focus()} ref={$terminal} id="terminal-scroll-area">
       <Lines lines={stdout}></Lines>
       <Prompt callback={enterCallback} keybinds={binds} prefix={props.prefix} inputRef={$prompt} />
     </div>

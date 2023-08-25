@@ -9,4 +9,14 @@
   width: 100%;
   white-space: pre-wrap;
   word-break: break-all;
+
+  & a {
+    color: $links;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+
+    &:hover {
+      color: $linksHover;
+    }
+  }
 }

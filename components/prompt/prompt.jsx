@@ -1,6 +1,7 @@
 import { useCallback, useState, useRef, useEffect } from "react"
 import scss from "./prompt.module.scss"
 import useTimer from "../../hooks/use_timer"
+import Color from "../color/color"
 
 /**
  * This component will create an input where we can run callbacks based on custom keybinds, the ENTER key have a dedicated props for its event as `callback`
@@ -23,7 +24,7 @@ import useTimer from "../../hooks/use_timer"
  */
 export default function Prompt(props) {
   const [input, setInput] = useState("")
-  const [history, setHistory] = useState(["test"])
+  const [history, setHistory] = useState(["superheroes", "about", "skills", "social", "projects"])
   const [historyCursor, setHistoryCursor] = useState(-1)
   const $caret = useRef(null)
   const { setTimer } = useTimer()

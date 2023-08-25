@@ -7,7 +7,8 @@ export default function AsyncLines(props) {
   useEffect(() => {
     const stopInterval = setTimeout(() => {
       setProgress(() => props.children.slice(0, progress.length + 1))
-    }, (1 / props.hz || 100) + (progress.length === 0 ? props.delay : 0))
+      document.getElementById("terminal-scroll-area").scrollBy(0, 100)
+    }, Math.floor(props.duration / props.children?.length) + (progress?.length === 0 ? props.delay : 0))
 
     return () => clearInterval(stopInterval)
   }, [progress])
