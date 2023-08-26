@@ -17,8 +17,14 @@ export default function TerminalWeb(props) {
   const $prompt = useRef(null)
   const $terminal = useRef(null)
 
+  // Prompt settings
+  const promptSettings = {
+    binds: { ctrl_l: cleanStdout },
+    prefix: props.prefix,
+    stdin,
+    commands,
+  }
   // Setting keybinds
-  const binds = { ctrl_l: cleanStdout }
 
   useEffect(() => {
     $terminal.current.scrollBy(0, 999999)
@@ -27,7 +33,7 @@ export default function TerminalWeb(props) {
   return (
     <div className={scss.wrapper} onClick={() => $prompt.current.focus()} ref={$terminal} id="terminal-scroll-area">
       <Lines lines={stdout}></Lines>
-      <Prompt keybinds={binds} prefix={props.prefix} stdin={stdin} commands={commands} inputRef={$prompt} />
+      <Prompt {...promptSettings} inputRef={$prompt} />
     </div>
   )
 }
