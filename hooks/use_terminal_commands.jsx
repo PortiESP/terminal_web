@@ -5,19 +5,22 @@ export default function useTerminalCommands(cmds, stdout) {
     // If input was empty, dont do anything
     if (!cmd) return
     // If command exists
-    if (cmds[cmd]) {
-      switch (typeof cmds[cmd]) {
+    const code = cmds[cmd]
+    if (code) {
+      switch (typeof code) {
         case "object":
-          cmds[cmd].map((l) => stdout(l))
+          if (Array.isArray(code)) code.map((l) => stdout(l))
+          else if (code.$$typeof) stdout(code)
+          else throw new Error(`Typeof command '${cmd}' (${typeof code}) is not valid`)
           break
         case "string":
-          stdout(cmds[cmd])
+          stdout(code)
           break
         case "function":
-          stdout(cmds[cmd]())
+          stdout(code())
           break
         default:
-          throw new Error(`Typeof command '${cmd}' (${typeof cmds[cmd]}) is not valid`)
+          throw new Error(`Typeof command '${cmd}' (${typeof code}) is not valid`)
           break
       }
     }
