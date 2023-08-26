@@ -7,7 +7,7 @@
   font-size: $fontSize;
   font-family: $fontFamily;
 
-  overflow-x: hidden;
+  overflow-x: scroll;
 
   // DEBUG unwrapped text
   color: $debug;
