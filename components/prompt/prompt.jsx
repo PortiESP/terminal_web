@@ -35,6 +35,8 @@ export default function Prompt({ stdin, keybinds, prefix, commands, ...props }) 
   const [caretOffset, setCaretOffset] = useState(0)
   // Run commands
   const { run } = useTerminalCommands(commands, stdin)
+  // Command suggestions
+  const [suggested, setSuggested] = useState("abc")
 
   // Handle kbd events
   const handleKeyEvent = useCallback(
@@ -82,6 +84,10 @@ export default function Prompt({ stdin, keybinds, prefix, commands, ...props }) 
           stdin(<OldPrompt prefix={prefix}>^C</OldPrompt>)
           resetLine()
           break
+        case "tab":
+          e.preventDefault()
+          setInput(suggested || "help")
+          break
         default:
           // Static caret effect
           $caret.current.classList.add(scss.flag__caret_static)
@@ -97,7 +103,7 @@ export default function Prompt({ stdin, keybinds, prefix, commands, ...props }) 
         keybinds[parsedKey]()
       }
     },
-    [input, historyCursor]
+    [input, historyCursor, suggested]
   )
 
   // Fill the input with the corresponding command from history when the history cursor is changed
@@ -105,6 +111,16 @@ export default function Prompt({ stdin, keybinds, prefix, commands, ...props }) 
     if (historyCursor > -1) setInput(history[historyCursor])
     else setInput("")
   }, [historyCursor])
+
+  // Choose the command that should be suggested (priority for the last command defined in the commands object)
+  useEffect(() => {
+    const result = input
+      ? Object.keys(commands)
+          .filter((cmd) => RegExp(`^${input}.`).test(cmd))
+          .pop()
+      : undefined
+    setSuggested(result)
+  }, [input])
 
   return (
     <pre className={scss.prompt}>
@@ -126,6 +142,7 @@ export default function Prompt({ stdin, keybinds, prefix, commands, ...props }) 
           </pre>
         ))}
         <span className={scss.caret} style={{ order: caretOffset }} ref={$caret} />
+        {suggested && <span className={scss.span__suggested}> [tab] {suggested}</span>}
       </div>
     </pre>
   )

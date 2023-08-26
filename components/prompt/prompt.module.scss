@@ -24,7 +24,6 @@
     animation: blink 1s infinite step-end;
 
     border-right: $caretWidth solid $caretColor;
-    margin-right: 1px;
 
     // Static
     &.flag__caret_static::after {
@@ -44,6 +43,10 @@
     position: absolute;
     top: 0;
     left: 0;
+  }
+
+  & .span__suggested {
+    color: $suggestedCommand;
   }
 }
 
