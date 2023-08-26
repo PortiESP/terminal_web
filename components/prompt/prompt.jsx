@@ -2,6 +2,7 @@ import { useCallback, useState, useRef, useEffect } from "react"
 import scss from "./prompt.module.scss"
 import useTimer from "../../hooks/use_timer"
 import { prefix } from "../../../../assets/terminal_settings"
+import useTerminalCommands from "../../hooks/use_terminal_commands"
 
 /**
  * This component will create an input where we can run callbacks based on custom keybinds, the ENTER key have a dedicated props for its event as `callback`
@@ -22,30 +23,36 @@ import { prefix } from "../../../../assets/terminal_settings"
  * ```
  * 
  */
-export default function Prompt(props) {
+export default function Prompt({ stdin, keybinds, prefix, commands, ...props }) {
   const [input, setInput] = useState("")
   const [history, setHistory] = useState(["superheroes", "about", "skills", "social", "projects"])
   const [historyCursor, setHistoryCursor] = useState(-1)
   const $caret = useRef(null)
   const { setTimer } = useTimer()
   const [caretOffset, setCaretOffset] = useState(0)
+  const { run } = useTerminalCommands(commands, stdin)
 
   // Handle kbd events
   const handleKeyEvent = useCallback(
     (e) => {
       const parsedKey = keyEvent2String(e)
       const inputValue = e.target.value
+      const resetLine = () => {
+        setHistoryCursor(-1)
+        setInput("")
+        setCaretOffset(0)
+      }
 
       // DEBUG
       // console.log(parsedKey)
 
+      // Default keybinds
       switch (parsedKey) {
         case "enter":
-          props.enter(inputValue)
+          stdin(<OldPrompt prefix={prefix}>{inputValue}</OldPrompt>)
           setHistory((old) => [inputValue, ...old])
-          setHistoryCursor(-1)
-          setInput("")
-          setCaretOffset(0)
+          run(inputValue)
+          resetLine()
           break
         case "arrowleft":
           setCaretOffset((old) => (old > 0 - inputValue.length ? old - 1 : old))
@@ -67,6 +74,10 @@ export default function Prompt(props) {
         case "home":
           setCaretOffset(0 - inputValue.length)
           break
+        case "ctrl_c":
+          stdin(<OldPrompt prefix={prefix}>^C</OldPrompt>)
+          resetLine()
+          break
 
         default:
           $caret.current.classList.add(scss.flag__caret_static)
@@ -77,9 +88,9 @@ export default function Prompt(props) {
       }
 
       // Check custom keybinds
-      if (props.keybinds && props.keybinds[parsedKey]) {
+      if (keybinds && keybinds[parsedKey]) {
         e.preventDefault()
-        props.keybinds[parsedKey]()
+        keybinds[parsedKey]()
       }
     },
     [input, historyCursor]
@@ -107,8 +118,8 @@ export default function Prompt(props) {
         {input}
       </p>
       <div className={scss.div__layer_caret}>
-        {(input + props.prefix).split("").map((_, i) => (
-          <pre key={i} style={{ order: 0 - (input + props.prefix).length + i + 1 }}>
+        {(input + prefix).split("").map((_, i) => (
+          <pre key={i} style={{ order: 0 - (input + prefix).length + i + 1 }}>
             {" "}
           </pre>
         ))}
@@ -138,4 +149,14 @@ function keyEvent2String(e) {
     : ""
 
   return `${prefix}${e.key.toLowerCase()}`
+}
+
+// Prompt logged to stdout
+function OldPrompt(props) {
+  return (
+    <span className={scss.flag__old_prompt}>
+      {props.prefix}
+      {props.children}
+    </span>
+  )
 }

@@ -47,6 +47,10 @@
   }
 }
 
+.flag__old_prompt {
+  color: $oldPrompt;
+}
+
 @keyframes blink {
   from,
   to {
