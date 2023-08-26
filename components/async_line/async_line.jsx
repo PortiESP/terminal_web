@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import scss from "./line.module.scss"
+import scss from "../line/line.module.scss"
 
 export default function AsyncLines(props) {
   const [progress, setProgress] = useState("")
