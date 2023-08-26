@@ -1,7 +1,6 @@
 import { useCallback, useState, useRef, useEffect } from "react"
 import scss from "./prompt.module.scss"
 import useTimer from "../../hooks/use_timer"
-import Color from "../color/color"
 import { prefix } from "../../../../assets/terminal_settings"
 
 /**
@@ -9,9 +8,9 @@ import { prefix } from "../../../../assets/terminal_settings"
  *
  * @param {*} props
  * @param {String||JSXElement} props.prefix - Information printed before the prompt input (same line)
- * @param {Function} props.callback - Function called when the user presses the ENTER key
+ * @param {Function} props.enter - Function called when the user presses the ENTER key
  * @param {Object} props.keybinds - Custom keybinds object. The keys correspond to the keybind, and the value must be a callback function
- * @param {Ref} props.inputRef - 
+ * @param {Ref} props.inputRef - (Output) This parameter will take a useRef hook that will be linked to the input tag
  * @returns {JSXElement}
  * 
  * Example of the keybinds object
@@ -22,16 +21,6 @@ import { prefix } from "../../../../assets/terminal_settings"
   }
  * ```
  * 
- */
-
-/**
- * Renders an input with CMD style and provide access to keybinds and custom commands
- *
- * @param {Function} callback - Callback for the ENTER key
- * @param {Object} keybinds - Object of keybinds and their callbacks
- * @param {String} prefix - Prompt prefix
- * @param {useRef} inputRef - (Output) This parameter will take a useRef hook that will be linked to the input tag
- *
  */
 export default function Prompt(props) {
   const [input, setInput] = useState("")
@@ -52,7 +41,7 @@ export default function Prompt(props) {
 
       switch (parsedKey) {
         case "enter":
-          props.callback(inputValue)
+          props.enter(inputValue)
           setHistory((old) => [inputValue, ...old])
           setHistoryCursor(-1)
           setInput("")

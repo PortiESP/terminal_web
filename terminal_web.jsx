@@ -19,18 +19,11 @@ export default function TerminalWeb(props) {
   const $terminal = useRef(null)
 
   // Setting keybinds
-  const binds = {
-    ctrl_l: cleanStdout,
-  }
+  const binds = { ctrl_l: cleanStdout }
 
   // ENTER Callback
   const enterCallback = useCallback((input) => {
-    stdin(
-      <span className={scss.flag__old_prompt}>
-        {props.prefix}
-        {input}
-      </span>
-    )
+    stdin(<OldPrompt prefix={props.prefix}>{input}</OldPrompt>)
     run(input)
   }, [])
 
@@ -41,7 +34,16 @@ export default function TerminalWeb(props) {
   return (
     <div className={scss.wrapper} onClick={() => $prompt.current.focus()} ref={$terminal} id="terminal-scroll-area">
       <Lines lines={stdout}></Lines>
-      <Prompt callback={enterCallback} keybinds={binds} prefix={props.prefix} inputRef={$prompt} />
+      <Prompt enter={enterCallback} keybinds={binds} prefix={props.prefix} inputRef={$prompt} />
     </div>
+  )
+}
+
+function OldPrompt(props) {
+  return (
+    <span className={scss.flag__old_prompt}>
+      {props.prefix}
+      {props.children}
+    </span>
   )
 }
