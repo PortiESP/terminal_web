@@ -24,12 +24,16 @@ import useTerminalCommands from "../../hooks/use_terminal_commands"
  * 
  */
 export default function Prompt({ stdin, keybinds, prefix, commands, ...props }) {
+  // Input state
   const [input, setInput] = useState("")
+  // Input command history
   const [history, setHistory] = useState(["superheroes", "about", "skills", "social", "projects"])
   const [historyCursor, setHistoryCursor] = useState(-1)
+  // Caret static effect while typing
   const $caret = useRef(null)
   const { setTimer } = useTimer()
   const [caretOffset, setCaretOffset] = useState(0)
+  // Run commands
   const { run } = useTerminalCommands(commands, stdin)
 
   // Handle kbd events
@@ -78,8 +82,8 @@ export default function Prompt({ stdin, keybinds, prefix, commands, ...props }) 
           stdin(<OldPrompt prefix={prefix}>^C</OldPrompt>)
           resetLine()
           break
-
         default:
+          // Static caret effect
           $caret.current.classList.add(scss.flag__caret_static)
           setTimer(() => {
             $caret.current.classList.remove(scss.flag__caret_static)
@@ -87,7 +91,7 @@ export default function Prompt({ stdin, keybinds, prefix, commands, ...props }) 
           break
       }
 
-      // Check custom keybinds
+      // Check if custom keybinds match the kbd input
       if (keybinds && keybinds[parsedKey]) {
         e.preventDefault()
         keybinds[parsedKey]()
@@ -109,9 +113,7 @@ export default function Prompt({ stdin, keybinds, prefix, commands, ...props }) 
         ref={props.inputRef}
         autoFocus={true}
         value={input}
-        onChange={(e) => {
-          setInput(e.target.value)
-        }}
+        onChange={(e) => setInput(e.target.value)}
       />
       <p className={scss.p__input}>
         {prefix}
