@@ -5,6 +5,13 @@ import Prompt from "./components/prompt/prompt"
 import { useCallback, useEffect, useRef } from "react"
 import useTerminalCommands from "./hooks/use_terminal_commands"
 
+/**
+ * Create a fake terminal that looks like a regular terminal emulator but with custom shell commands
+ *
+ * @param {String} prefix
+ * @param {Array of Strings} initialMessage
+ * @param {Object} commands
+ */
 export default function TerminalWeb(props) {
   const { stdout, stdin, cleanStdout } = useTerminalPipes(props.initialMessage)
   const { run } = useTerminalCommands(props.commands, stdin)
