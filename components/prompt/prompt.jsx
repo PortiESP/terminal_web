@@ -2,6 +2,7 @@ import { useCallback, useState, useRef, useEffect } from "react"
 import scss from "./prompt.module.scss"
 import useTimer from "../../hooks/use_timer"
 import Color from "../color/color"
+import { prefix } from "../../../../assets/terminal_settings"
 
 /**
  * This component will create an input where we can run callbacks based on custom keybinds, the ENTER key have a dedicated props for its event as `callback`
@@ -103,7 +104,6 @@ export default function Prompt(props) {
 
   return (
     <pre className={scss.prompt}>
-      <span>{props.prefix}</span>
       <input
         onKeyDown={handleKeyEvent}
         ref={props.inputRef}
@@ -113,9 +113,10 @@ export default function Prompt(props) {
           setInput(e.target.value)
         }}
       />
-      {input.split("").map((letter, i) => (
-        <span key={i}>{letter}</span>
-      ))}
+      <p className={scss.p__input}>
+        {prefix}
+        {input}
+      </p>
       <div className={scss.div__layer_caret}>
         {(input + props.prefix).split("").map((_, i) => (
           <pre key={i} style={{ order: 0 - (input + props.prefix).length + i + 1 }}>

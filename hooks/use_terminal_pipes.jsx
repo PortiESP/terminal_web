@@ -4,18 +4,25 @@ import { useCallback, useState } from "react"
  * Use this hook to create a manager fort the historial of the Termial
  *
  * @param {Array} initial - Array of strings that will be part of the initial array instead of having an empty array
+ * @param {Function} callback - A function that will be called when a the stdout is altered, the function will be called and the new line will be passed as a parameter, or `undefined` if the stdout was cleaned
  * @returns {Object} - Utils of the hook
  *  - history {Array} - Array of strings
  *  - appendHistory {Function} - Add a new entry in the history array
  *  - clearHistory {Function} - Empty the history
  */
-export default function useTerminalPipes(initial) {
+export default function useTerminalPipes(initial, callback) {
   const [stdout, setStdout] = useState(initial || [])
 
   //  Methods
-  const stdin = useCallback((input) => setStdout((old) => [...old, input || " "]), [])
+  const stdin = useCallback((input) => {
+    setStdout((old) => [...old, input || " "])
+    callback && callback(input)
+  }, [])
 
-  const cleanStdout = useCallback(() => setStdout(() => []), [])
+  const cleanStdout = useCallback(() => {
+    setStdout(() => [])
+    callback && callback(undefined)
+  }, [])
 
   return {
     stdout,
