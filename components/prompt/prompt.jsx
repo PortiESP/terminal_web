@@ -1,7 +1,6 @@
 import { useCallback, useState, useRef, useEffect } from "react"
 import scss from "./prompt.module.scss"
 import useTimer from "../../hooks/use_timer"
-import { prefix } from "../../../../assets/terminal_settings"
 import useTerminalCommands from "../../hooks/use_terminal_commands"
 
 /**
