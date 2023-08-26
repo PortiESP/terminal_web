@@ -22,6 +22,16 @@ import Color from "../color/color"
  * ```
  * 
  */
+
+/**
+ * Renders an input with CMD style and provide access to keybinds and custom commands
+ *
+ * @param {Function} callback - Callback for the ENTER key
+ * @param {Object} keybinds - Object of keybinds and their callbacks
+ * @param {String} prefix - Prompt prefix
+ * @param {useRef} inputRef - (Output) This parameter will take a useRef hook that will be linked to the input tag
+ *
+ */
 export default function Prompt(props) {
   const [input, setInput] = useState("")
   const [history, setHistory] = useState(["superheroes", "about", "skills", "social", "projects"])
