@@ -15,7 +15,6 @@ import { useEffect, useRef, useState } from "react"
  */
 export default function TerminalWeb({ prefix, commands, ...props }) {
   const pipes = useTerminalPipes(props.initialMessage)
-  const $prompt = useRef(null)
   const $terminal = useRef(null)
   const [customScreen, setCustomScreen] = useState(false)
   const { ListenerProvider } = useKBDListener()
@@ -35,7 +34,7 @@ export default function TerminalWeb({ prefix, commands, ...props }) {
   }, [pipes.stdout])
 
   return (
-    <div className={scss.wrapper} onClick={() => $prompt.current?.focus()} ref={$terminal} id="terminal-scroll-area">
+    <div className={scss.wrapper} ref={$terminal} id="terminal-scroll-area">
       {customScreen || (
         <ListenerProvider callback={eventHandler}>
           <Lines lines={pipes.stdout}></Lines>

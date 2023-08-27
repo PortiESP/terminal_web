@@ -40,10 +40,8 @@ export default function usePrompt({ pipes, keybinds, prefix, commands, setScreen
 
   // Handle kbd events
   const handleKeyEvent = useCallback(
-    (e) => {
+    (parsedKey, preventDefault) => {
       // Skip if prompt is disabled
-      const parsedKey = keyEvent2String(e)
-      const inputValue = e.target.value
       const resetLine = () => {
         setHistoryCursor(-1)
         setInput("")
@@ -56,13 +54,13 @@ export default function usePrompt({ pipes, keybinds, prefix, commands, setScreen
       // Default keybinds
       switch (parsedKey) {
         case "enter":
-          pipes.stdin(<OldPrompt prefix={prefix}>{inputValue}</OldPrompt>)
-          setHistory((old) => [inputValue, ...old])
-          run(inputValue)
+          pipes.stdin(<OldPrompt prefix={prefix}>{input}</OldPrompt>)
+          setHistory((old) => [input, ...old])
+          run(input)
           resetLine()
           break
         case "arrowleft":
-          setCaretOffset((old) => (old > 0 - inputValue.length ? old - 1 : old))
+          setCaretOffset((old) => (old > 0 - input.length ? old - 1 : old))
           break
         case "arrowright":
           setCaretOffset((old) => (old < 0 ? old + 1 : old))
@@ -79,7 +77,7 @@ export default function usePrompt({ pipes, keybinds, prefix, commands, setScreen
           setCaretOffset(0)
           break
         case "home":
-          setCaretOffset(0 - inputValue.length)
+          setCaretOffset(0 - input.length)
           break
         case "ctrl_c":
           pipes.stdin(<OldPrompt prefix={prefix}>^C</OldPrompt>)
@@ -100,7 +98,7 @@ export default function usePrompt({ pipes, keybinds, prefix, commands, setScreen
 
       // Check if custom keybinds match the kbd input
       if (keybinds && keybinds[parsedKey]) {
-        e.preventDefault()
+        preventDefault()
         keybinds[parsedKey]()
       }
     },
@@ -134,28 +132,6 @@ export default function usePrompt({ pipes, keybinds, prefix, commands, setScreen
       </pre>
     ),
   }
-}
-
-/**
- * Converts a DOM Event object into a string that represents the keybind
- *
- * @param {SyntheticEvent} e - Keyboard DOM Event
- * @returns - A string of the corresponding keybind for computable object keys
- */
-function keyEvent2String(e) {
-  const isSpecial = ["Control", "Shift"].includes(e.key)
-  // prettier-ignore
-  const prefix = !isSpecial
-    ? `${
-        e.ctrlKey ? "ctrl_" : ""
-      }${
-        e.shiftKey ? "shift_" : ""
-      }${
-        e.altKey ? "alt_" : ""
-      }`
-    : ""
-
-  return `${prefix}${e.key.toLowerCase()}`
 }
 
 // Prompt logged to stdout component
