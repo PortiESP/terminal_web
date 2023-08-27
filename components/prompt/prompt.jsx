@@ -28,7 +28,7 @@ export default function usePrompt({ pipes, keybinds, prefix, commands, setScreen
   // Input state
   const [input, setInput] = useState("")
   // Input command history
-  const { history, setHistory, historyCursor, setHistoryCursor, pushHistory } = useCommandHistory(setInput)
+  const { history, historyCursor, setHistoryCursor, pushHistory } = useCommandHistory(setInput)
   // Caret static effect while typing
   const $caret = useRef(null)
   const { setTimer } = useTimer()
