@@ -7,26 +7,32 @@ export default function useTerminalCommands(cmds, options) {
 
     const { pipes, setScreen } = options
 
-    // If command exists
+    // Check if command exists
+    const frag = cmd.split(" ")
+    const cmdName = frag.slice(0, 2).join(" ")
+    if (!cmds[cmdName]) {
+      pipes.stdin(cmds.error)
+      return
+    }
 
     // If command is interactive
-    if (cmd.split(" ")[0] === "run") {
+    if (frag[0] === "run") {
+      // Clean stdout
+      pipes.cleanBuffer()
       // Find the matchind command in the commands object
-      setScreen(cmds[cmd])
+      const CustomScreen = cmds[cmdName]
+      if (CustomScreen) setScreen(<CustomScreen exit={() => setScreen(undefined)} p={frag} />)
     }
     // If command is not interactive
     else {
-      const code = cmds[cmd]
+      const code = cmds[cmdName]
       if (code) {
         switch (typeof code) {
           // In commands is defined as an object (array, JSX, ...)
           case "object":
-            // If is Array
             if (Array.isArray(code)) code.map((l) => pipes.stdin(l))
-            // If is JSX
             else if (code.$$typeof) pipes.stdin(code)
-            // Anything else, ERROR
-            else throw new Error(`Typeof command '${cmd}' (${typeof code}) is not valid`)
+            else throw new Error(`Typeof command '${cmdName}' (${typeof code}) is not valid`)
             break
           // If command is defined as a string, just send it over the stdin
           case "string":
@@ -37,14 +43,11 @@ export default function useTerminalCommands(cmds, options) {
             code(pipes)
             break
           default:
-            throw new Error(`Typeof command '${cmd}' (${typeof code}) is not valid`)
+            throw new Error(`Typeof command '${cmdName}' (${typeof code}) is not valid`)
             break
         }
       }
       // If command does not exist
-      else {
-        pipes.stdin(cmds.error)
-      }
     }
   }, [])
 
