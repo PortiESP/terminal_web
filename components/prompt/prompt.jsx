@@ -3,6 +3,7 @@ import scss from "./prompt.module.scss"
 import useTimer from "../../hooks/use_timer"
 import useTerminalCommands from "../../hooks/use_terminal_commands"
 import useSuggestions from "./use_suggestions"
+import useCommandHistory from "./use_command_history"
 
 /**
  * This component will create an input where we can run callbacks based on custom keybinds, the ENTER key have a dedicated props for its event as `callback`
@@ -27,8 +28,7 @@ export default function usePrompt({ pipes, keybinds, prefix, commands, setScreen
   // Input state
   const [input, setInput] = useState("")
   // Input command history
-  const [history, setHistory] = useState(["superheroes", "about", "skills", "social", "projects"])
-  const [historyCursor, setHistoryCursor] = useState(-1)
+  const { history, setHistory, historyCursor, setHistoryCursor, pushHistory } = useCommandHistory(setInput)
   // Caret static effect while typing
   const $caret = useRef(null)
   const { setTimer } = useTimer()
@@ -55,7 +55,7 @@ export default function usePrompt({ pipes, keybinds, prefix, commands, setScreen
       switch (parsedKey) {
         case "enter":
           pipes.stdin(<OldPrompt prefix={prefix}>{input}</OldPrompt>)
-          setHistory((old) => [input, ...old])
+          pushHistory(input)
           run(input)
           resetLine()
           break
@@ -84,7 +84,7 @@ export default function usePrompt({ pipes, keybinds, prefix, commands, setScreen
           resetLine()
           break
         case "tab":
-          e.preventDefault()
+          preventDefault()
           setInput(suggested || "help")
           break
         default:
@@ -104,12 +104,6 @@ export default function usePrompt({ pipes, keybinds, prefix, commands, setScreen
     },
     [input, historyCursor, suggested]
   )
-
-  // Fill the input with the corresponding command from history when the history cursor is changed
-  useEffect(() => {
-    if (historyCursor > -1) setInput(history[historyCursor])
-    else setInput("")
-  }, [historyCursor])
 
   return {
     eventHandler: handleKeyEvent,
