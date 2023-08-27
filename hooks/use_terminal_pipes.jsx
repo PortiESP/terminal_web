@@ -19,7 +19,7 @@ export default function useTerminalPipes(initial, callback) {
     callback && callback(input)
   }, [])
 
-  const cleanStdout = useCallback(() => {
+  const cleanBuffer = useCallback(() => {
     setStdout(() => [])
     callback && callback(undefined)
   }, [])
@@ -27,6 +27,6 @@ export default function useTerminalPipes(initial, callback) {
   return {
     stdout,
     stdin,
-    cleanStdout,
+    cleanBuffer,
   }
 }

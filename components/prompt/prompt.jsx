@@ -2,6 +2,7 @@ import { useCallback, useState, useRef, useEffect } from "react"
 import scss from "./prompt.module.scss"
 import useTimer from "../../hooks/use_timer"
 import useTerminalCommands from "../../hooks/use_terminal_commands"
+import useSuggestions from "./use_suggestions"
 
 /**
  * This component will create an input where we can run callbacks based on custom keybinds, the ENTER key have a dedicated props for its event as `callback`
@@ -22,7 +23,7 @@ import useTerminalCommands from "../../hooks/use_terminal_commands"
  * ```
  * 
  */
-export default function Prompt({ stdin, keybinds, prefix, commands, ...props }) {
+export default function Prompt({ pipes, keybinds, prefix, commands, ...props }) {
   // Input state
   const [input, setInput] = useState("")
   // Input command history
@@ -33,9 +34,9 @@ export default function Prompt({ stdin, keybinds, prefix, commands, ...props }) 
   const { setTimer } = useTimer()
   const [caretOffset, setCaretOffset] = useState(0)
   // Run commands
-  const { run } = useTerminalCommands(commands, stdin)
+  const { run } = useTerminalCommands(commands, pipes)
   // Command suggestions
-  const [suggested, setSuggested] = useState("abc")
+  const suggested = useSuggestions(input, commands)
 
   // Handle kbd events
   const handleKeyEvent = useCallback(
@@ -54,7 +55,7 @@ export default function Prompt({ stdin, keybinds, prefix, commands, ...props }) 
       // Default keybinds
       switch (parsedKey) {
         case "enter":
-          stdin(<OldPrompt prefix={prefix}>{inputValue}</OldPrompt>)
+          pipes.stdin(<OldPrompt prefix={prefix}>{inputValue}</OldPrompt>)
           setHistory((old) => [inputValue, ...old])
           run(inputValue)
           resetLine()
@@ -80,7 +81,7 @@ export default function Prompt({ stdin, keybinds, prefix, commands, ...props }) 
           setCaretOffset(0 - inputValue.length)
           break
         case "ctrl_c":
-          stdin(<OldPrompt prefix={prefix}>^C</OldPrompt>)
+          pipes.stdin(<OldPrompt prefix={prefix}>^C</OldPrompt>)
           resetLine()
           break
         case "tab":
@@ -111,25 +112,9 @@ export default function Prompt({ stdin, keybinds, prefix, commands, ...props }) 
     else setInput("")
   }, [historyCursor])
 
-  // Choose the command that should be suggested (priority for the last command defined in the commands object)
-  useEffect(() => {
-    const result = input
-      ? Object.keys(commands)
-          .filter((cmd) => RegExp(`^${input}.`).test(cmd))
-          .pop()
-      : undefined
-    setSuggested(result)
-  }, [input])
-
   return (
-    <pre className={scss.prompt}>
-      <input
-        onKeyDown={handleKeyEvent}
-        ref={props.inputRef}
-        autoFocus={true}
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      />
+    <pre className={scss.prompt} onKeyDown={handleKeyEvent}>
+      <input ref={props.inputRef} autoFocus={true} value={input} onChange={(e) => setInput(e.target.value)} />
       <p className={scss.p__input}>
         {prefix}
         {input}
@@ -169,7 +154,7 @@ function keyEvent2String(e) {
   return `${prefix}${e.key.toLowerCase()}`
 }
 
-// Prompt logged to stdout
+// Prompt logged to stdout component
 function OldPrompt(props) {
   return (
     <span className={scss.flag__old_prompt}>

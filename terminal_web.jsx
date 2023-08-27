@@ -13,26 +13,26 @@ import { useEffect, useRef } from "react"
  * @param {Object} commands
  */
 export default function TerminalWeb({ prefix, commands, ...props }) {
-  const { stdout, stdin, cleanStdout } = useTerminalPipes(props.initialMessage)
+  const pipes = useTerminalPipes(props.initialMessage)
   const $prompt = useRef(null)
   const $terminal = useRef(null)
 
   // Prompt settings
   const promptSettings = {
-    keybinds: { ctrl_l: cleanStdout, ...props.keybinds },
+    keybinds: { ctrl_l: pipes.cleanBuffer, ...props.keybinds },
     prefix,
-    stdin,
+    pipes,
     commands,
   }
   // Setting keybinds
 
   useEffect(() => {
     $terminal.current.scrollBy(0, 999999)
-  }, [stdout])
+  }, [pipes.stdout])
 
   return (
     <div className={scss.wrapper} onClick={() => $prompt.current.focus()} ref={$terminal} id="terminal-scroll-area">
-      <Lines lines={stdout}></Lines>
+      <Lines lines={pipes.stdout}></Lines>
       <Prompt {...promptSettings} inputRef={$prompt} />
     </div>
   )
