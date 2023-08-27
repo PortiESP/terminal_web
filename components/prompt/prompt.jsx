@@ -23,7 +23,7 @@ import useSuggestions from "./use_suggestions"
  * ```
  * 
  */
-export default function Prompt({ pipes, keybinds, prefix, commands, ...props }) {
+export default function Prompt({ pipes, keybinds, prefix, commands, setScreen, ...props }) {
   // Input state
   const [input, setInput] = useState("")
   // Input command history
@@ -34,13 +34,14 @@ export default function Prompt({ pipes, keybinds, prefix, commands, ...props }) 
   const { setTimer } = useTimer()
   const [caretOffset, setCaretOffset] = useState(0)
   // Run commands
-  const { run } = useTerminalCommands(commands, pipes)
+  const { run } = useTerminalCommands(commands, { pipes, setScreen })
   // Command suggestions
   const suggested = useSuggestions(input, commands)
 
   // Handle kbd events
   const handleKeyEvent = useCallback(
     (e) => {
+      // Skip if prompt is disabled
       const parsedKey = keyEvent2String(e)
       const inputValue = e.target.value
       const resetLine = () => {
@@ -90,9 +91,9 @@ export default function Prompt({ pipes, keybinds, prefix, commands, ...props }) 
           break
         default:
           // Static caret effect
-          $caret.current.classList.add(scss.flag__caret_static)
+          $caret.current?.classList.add(scss.flag__caret_static)
           setTimer(() => {
-            $caret.current.classList.remove(scss.flag__caret_static)
+            $caret.current?.classList.remove(scss.flag__caret_static)
           }, 1000)
           break
       }
