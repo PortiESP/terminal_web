@@ -115,7 +115,7 @@ export default function Prompt({ pipes, keybinds, prefix, commands, setScreen, .
 
   return (
     <pre className={scss.prompt} onKeyDown={handleKeyEvent}>
-      <input ref={props.inputRef} autoFocus={true} value={input} onChange={(e) => setInput(e.target.value)} />
+      <input ref={props.inputRef} autoFocus value={input} onChange={(e) => setInput(e.target.value)} />
       <p className={scss.p__input}>
         {prefix}
         {input}
