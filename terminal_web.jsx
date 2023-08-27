@@ -1,7 +1,8 @@
 import scss from "./terminal_web.module.scss"
 import useTerminalPipes from "./hooks/use_terminal_pipes"
+import useKBDListener from "./hooks/use_kbd_events"
 import Lines from "./components/line/lines"
-import Prompt from "./components/prompt/prompt"
+import usePrompt from "./components/prompt/prompt"
 import { useEffect, useRef, useState } from "react"
 
 /**
@@ -17,6 +18,7 @@ export default function TerminalWeb({ prefix, commands, ...props }) {
   const $prompt = useRef(null)
   const $terminal = useRef(null)
   const [customScreen, setCustomScreen] = useState(false)
+  const { ListenerProvider } = useKBDListener()
 
   // Prompt settings
   const promptSettings = {
@@ -26,7 +28,7 @@ export default function TerminalWeb({ prefix, commands, ...props }) {
     commands,
     setScreen: setCustomScreen,
   }
-  // Setting keybinds
+  const { eventHandler, Prompt } = usePrompt(promptSettings)
 
   useEffect(() => {
     $terminal.current.scrollBy(0, 999999)
@@ -35,10 +37,10 @@ export default function TerminalWeb({ prefix, commands, ...props }) {
   return (
     <div className={scss.wrapper} onClick={() => $prompt.current?.focus()} ref={$terminal} id="terminal-scroll-area">
       {customScreen || (
-        <>
+        <ListenerProvider callback={eventHandler}>
           <Lines lines={pipes.stdout}></Lines>
-          <Prompt {...promptSettings} inputRef={$prompt} />
-        </>
+          <Prompt />
+        </ListenerProvider>
       )}
     </div>
   )

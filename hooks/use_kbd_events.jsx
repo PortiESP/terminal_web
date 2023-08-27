@@ -10,7 +10,7 @@ function ListenerProvider(props) {
   const $input = useRef(null)
   return (
     <div onKeyDown={props.callback} onClick={() => $input.current.focus()} style={frameStyle}>
-      <input autoFocus style={{ opacity: 0, position: "absolute" }} ref={$input} />
+      <input autoFocus style={{ opacity: 0, position: "absolute" }} ref={$input} name="listener" />
       {props.children}
     </div>
   )

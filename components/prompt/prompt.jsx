@@ -23,7 +23,7 @@ import useSuggestions from "./use_suggestions"
  * ```
  * 
  */
-export default function Prompt({ pipes, keybinds, prefix, commands, setScreen, ...props }) {
+export default function usePrompt({ pipes, keybinds, prefix, commands, setScreen, ...props }) {
   // Input state
   const [input, setInput] = useState("")
   // Input command history
@@ -113,24 +113,27 @@ export default function Prompt({ pipes, keybinds, prefix, commands, setScreen, .
     else setInput("")
   }, [historyCursor])
 
-  return (
-    <pre className={scss.prompt} onKeyDown={handleKeyEvent}>
-      <input ref={props.inputRef} autoFocus value={input} onChange={(e) => setInput(e.target.value)} />
-      <p className={scss.p__input}>
-        {prefix}
-        {input}
-      </p>
-      <div className={scss.div__layer_caret}>
-        {(input + prefix).split("").map((_, i) => (
-          <pre key={i} style={{ order: 0 - (input + prefix).length + i + 1 }}>
-            {" "}
-          </pre>
-        ))}
-        <span className={scss.caret} style={{ order: caretOffset }} ref={$caret} />
-        {suggested && <span className={scss.span__suggested}> [tab] {suggested}</span>}
-      </div>
-    </pre>
-  )
+  return {
+    eventHandler: handleKeyEvent,
+    Prompt: () => (
+      <pre className={scss.prompt}>
+        <input autoFocus value={input} onChange={(e) => setInput(e.target.value)} name="prompt" />
+        <p className={scss.p__input}>
+          {prefix}
+          {input}
+        </p>
+        <div className={scss.div__layer_caret}>
+          {(input + prefix).split("").map((_, i) => (
+            <pre key={i} style={{ order: 0 - (input + prefix).length + i + 1 }}>
+              {" "}
+            </pre>
+          ))}
+          <span className={scss.caret} style={{ order: caretOffset }} ref={$caret} />
+          {suggested && <span className={scss.span__suggested}> [tab] {suggested}</span>}
+        </div>
+      </pre>
+    ),
+  }
 }
 
 /**
