@@ -11,7 +11,10 @@ function ListenerProvider(props) {
   return (
     <div
       onKeyDown={(event) => {
-        props.callback(keyEvent2String(event), () => event.preventDefault())
+        const parsedKey = keyEvent2String(event)
+        const preventFunc = () => event.preventDefault()
+        props.debug && console.log(parsedKey)
+        props.callback(parsedKey, preventFunc)
       }}
       onClick={() => $input.current.focus()}
       style={frameStyle}
@@ -34,6 +37,7 @@ const frameStyle = {
  * @returns - A string of the corresponding keybind for computable object keys
  */
 function keyEvent2String(e) {
+  // Parse CTRL, SHIFT and ALT keys as chained
   const isSpecial = ["Control", "Shift"].includes(e.key)
   // prettier-ignore
   const prefix = !isSpecial
@@ -46,5 +50,12 @@ function keyEvent2String(e) {
       }`
     : ""
 
-  return `${prefix}${e.key.toLowerCase()}`
+  const key = e.key
+    .toLowerCase()
+    // Rename space key
+    .replace(" ", "space")
+
+  // Rename keys
+
+  return `${prefix}${key}`
 }
