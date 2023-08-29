@@ -16,7 +16,7 @@ export default function useSuggestions(inputState, availableCommands) {
   useEffect(() => {
     const result = inputState
       ? Object.keys(availableCommands)
-          .filter((cmd) => RegExp(`^${inputState}.`).test(cmd))
+          .filter((cmd) => RegExp(`^${inputState}.`, "i").test(cmd))
           .pop()
       : undefined
     setSuggested(result !== ERROR ? result : undefined) // Do not autocomplete with error command
