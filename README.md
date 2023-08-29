@@ -13,6 +13,7 @@ This React component will generate a CLI with custom shell commands
 - ⌨ Typing effects
 - 📜 Commands history
 - 🏹 Keybinds
+- 📱 Responsive design
 
 ### Code features
 
