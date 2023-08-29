@@ -54,6 +54,72 @@
   color: $oldPrompt;
 }
 
+.mobile {
+  position: fixed;
+  bottom: 0;
+
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 10px;
+  gap: 10px;
+
+  // background: red;
+}
+
+$background: #111e;
+$bRadius: 4px;
+
+.mobile__div_blobs {
+  align-self: flex-end;
+  display: flex;
+  gap: 6px;
+}
+.mobile__blob {
+  width: fit-content;
+  background: $background;
+  padding: 5px;
+  border-radius: $bRadius;
+  color: gray;
+
+  &.flag__mobile_active {
+    color: white;
+    border-radius: 0 0 $bRadius $bRadius;
+  }
+
+  &:hover {
+    background-color: #444d;
+  }
+}
+
+.mobile__menu {
+  background: $background;
+  border-radius: $bRadius $bRadius 0 $bRadius;
+  padding: 6px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  height: 200px;
+  overflow-y: scroll;
+
+  & pre {
+    padding: 6px;
+    color: #aaa;
+  }
+
+  & .mobile__menu_cmd {
+    background: #222d;
+    border-radius: 2px;
+    padding: 4px;
+    color: #ff00ff;
+
+    &:hover {
+      background-color: #444d;
+    }
+  }
+}
+
 @keyframes blink {
   from,
   to {

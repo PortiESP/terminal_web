@@ -1,4 +1,5 @@
 import { useRef } from "react"
+import useMobile from "./use_mobile"
 
 /**
  * This hook will creates a component that will listen to keyboard events triggered by the elements wrapped inside
@@ -22,6 +23,9 @@ export default function useKBDListener() {
  */
 function ListenerProvider(props) {
   const $input = useRef(null)
+  const $focus = useRef(null)
+  const { isMobile } = useMobile()
+
   return (
     <div
       onKeyDown={(event) => {
@@ -32,11 +36,16 @@ function ListenerProvider(props) {
         // Event callback
         props.callback(parsedKey, preventFunc)
       }}
-      onClick={() => $input.current.focus()}
+      onClick={() => {
+        $input.current.focus()
+        $focus.current.scrollIntoView()
+        isMobile && setTimeout(() => window.scrollBy(0, 999), 10)
+      }}
       style={frameStyle}
     >
-      <input autoFocus style={{ opacity: 0, position: "absolute" }} ref={$input} name="listener" />
+      <input autoFocus style={{ opacity: 0, position: "absolute", bottom: 0 }} ref={$input} name="listener" />
       {props.children}
+      <span ref={$focus} />
     </div>
   )
 }

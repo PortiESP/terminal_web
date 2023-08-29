@@ -4,6 +4,8 @@ import useTimer from "../../hooks/use_timer"
 import useTerminalCommands from "../../hooks/use_terminal_commands"
 import useSuggestions from "./use_suggestions"
 import useCommandHistory from "./use_command_history"
+import useMobile from "../../hooks/use_mobile"
+import MobileInterface from "./mobile_interface"
 
 /**
  * This hook will create an input and a function that when provided to a ListenerProvider (useKBDListener hook) it can make the input react to some events
@@ -39,6 +41,8 @@ export default function usePrompt({ pipes, keybinds, prefix, commands, setScreen
   const { run } = useTerminalCommands(commands, { pipes, setScreen })
   // Command suggestions
   const suggested = useSuggestions(input, commands)
+  // Responsive context
+  const { MobileRender } = useMobile()
 
   // Handle kbd events
   const handleKeyEvent = useCallback(
@@ -110,27 +114,32 @@ export default function usePrompt({ pipes, keybinds, prefix, commands, setScreen
   return {
     eventHandler: handleKeyEvent,
     Prompt: () => (
-      <pre className={scss.prompt}>
-        <input autoFocus value={input} onChange={(e) => setInput(e.target.value)} name="prompt" />
-        <p className={scss.p__input}>
-          {prefix}
-          {input}
-        </p>
-        <div className={scss.div__layer_caret}>
-          {(input + prefix).split("").map((_, i) => (
-            <pre key={i} style={{ order: 0 - (input + prefix).length + i + 1 }}>
-              {" "}
-            </pre>
-          ))}
-          <span className={scss.caret} style={{ order: caretOffset }} ref={$caret} />
-          {suggested && (
-            <span className={scss.span__suggested} onClick={() => setInput(suggested)}>
-              {" "}
-              [tab] {suggested}
-            </span>
-          )}
-        </div>
-      </pre>
+      <>
+        <pre className={scss.prompt}>
+          <input autoFocus value={input} onChange={(e) => setInput(e.target.value)} name="prompt" />
+          <p className={scss.p__input}>
+            {prefix}
+            {input}
+          </p>
+          <div className={scss.div__layer_caret}>
+            {(input + prefix).split("").map((_, i) => (
+              <pre key={i} style={{ order: 0 - (input + prefix).length + i + 1 }}>
+                {" "}
+              </pre>
+            ))}
+            <span className={scss.caret} style={{ order: caretOffset }} ref={$caret} />
+            {suggested && (
+              <span className={scss.span__suggested} onClick={() => setInput(suggested)}>
+                {" "}
+                [tab] {suggested}
+              </span>
+            )}
+          </div>
+        </pre>
+        <MobileRender>
+          <MobileInterface commands={Object.keys(commands)} setInput={setInput} handleKeyEvent={handleKeyEvent} />
+        </MobileRender>
+      </>
     ),
   }
 }
