@@ -26,7 +26,8 @@ export default function useTerminalCommands(commands, options) {
 
     // Check if command exists
     const frag = cmd.split(" ")
-    const cmdName = frag.slice(0, 2).join(" ")
+    const cmdName = frag[0] !== "run" ? frag[0] : frag.slice(0, 2).join(" ")
+    console.log(frag, cmdName)
     if (!commands[cmdName]) {
       pipes.stdin(commands.error)
       return
@@ -43,6 +44,7 @@ export default function useTerminalCommands(commands, options) {
     // If command is not interactive
     else {
       const code = commands[cmdName]
+      console.log(code)
       if (code) {
         switch (typeof code) {
           // In commands is defined as an object (array, JSX, ...)
@@ -55,9 +57,9 @@ export default function useTerminalCommands(commands, options) {
           case "string":
             pipes.stdin(code)
             break
-          // If command is defined as a function, the parameter passed will be the terminal pipes {stdin, stdout, cleanBuffer} as well as an object with additional methods
+          // If command is defined as a function, the parameter passed will be the terminal pipes {stdin, stdout, cleanBuffer} as well as an array of the params following the command name
           case "function":
-            code(pipes)
+            code(pipes, frag.slice(1))
             break
           default:
             throw new Error(`Typeof command '${cmdName}' (${typeof code}) is not valid`)
