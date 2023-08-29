@@ -13,12 +13,13 @@ import { useCallback, useState } from "react"
 export default function useTerminalPipes(initial, callback) {
   const [stdout, setStdout] = useState(initial || [])
 
-  //  Methods
+  // Define a method to push items to the `stdout` state array
   const stdin = useCallback((input) => {
     setStdout((old) => [...old, input || " "])
     callback && callback(input)
   }, [])
 
+  // Define a method to empty the array of the `stdout` state
   const cleanBuffer = useCallback(() => {
     setStdout(() => [])
     callback && callback(undefined)

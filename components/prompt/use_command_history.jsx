@@ -1,7 +1,19 @@
 import { useState, useEffect, useCallback } from "react"
 
-export default function useCommandHistory(setInput) {
-  const [history, setHistory] = useState(["superheroes", "about", "skills", "social", "projects"])
+/**
+ * This hook is used to manage the history of the commands used by the terminal
+ *
+ * @param {Function} setInput - State setter of the prompt input value
+ * @returns {Object}
+ *  - @returns {Object.history} - Array of the commands
+ *  - @returns {Object.historyCursor} - Current item of the list pointed
+ *  - @returns {Object.pushHistory} - Append a new item to the history list
+ *  - @returns {Object.setHistoryCursor} - Update list pointer
+ */
+export default function useCommandHistory(setInput, defaultCommands) {
+  // Commands list state
+  const [history, setHistory] = useState(defaultCommands || [])
+  // Command list pointer
   const [historyCursor, setHistoryCursor] = useState(-1)
 
   // Push to history
@@ -13,5 +25,5 @@ export default function useCommandHistory(setInput) {
     else setInput("")
   }, [historyCursor])
 
-  return { history, setHistory, historyCursor, setHistoryCursor, pushHistory }
+  return { history, historyCursor, setHistoryCursor, pushHistory }
 }

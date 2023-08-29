@@ -3,7 +3,7 @@ import { useCallback } from "react"
 const INTERACTIVE_PREFIX = "run"
 
 /**
- * This hook is used to handle the execution of commands supporting all the different posibilities
+ * This hook is used to handle the execution of commands from the provided commands object
  *
  * We can set the commands as: Strings, JSX, Functions or Arrays of strings/JSX
  *  - If we define a command as a function, the function will receive the pipes object (useTerminalPipes)
@@ -14,20 +14,21 @@ const INTERACTIVE_PREFIX = "run"
  *
  * @param {Object} cmds - This parameter takes an object with the keys as the exact name of the commands
  * @param {Object} options - This parameter must take an object with the keys `pipes` and `setScreen`
- * @returns
+ * @returns {Object} - Returns an object with the method `run` which will be called to
  */
-export default function useTerminalCommands(cmds, options) {
+export default function useTerminalCommands(commands, options) {
   const run = useCallback((cmd) => {
     // If input was empty, dont do anything
     if (!cmd) return
 
+    // Destructure the screen management methods
     const { pipes, setScreen } = options
 
     // Check if command exists
     const frag = cmd.split(" ")
     const cmdName = frag.slice(0, 2).join(" ")
-    if (!cmds[cmdName]) {
-      pipes.stdin(cmds.error)
+    if (!commands[cmdName]) {
+      pipes.stdin(commands.error)
       return
     }
 
@@ -36,12 +37,12 @@ export default function useTerminalCommands(cmds, options) {
       // Clean stdout
       pipes.cleanBuffer()
       // Find the matchind command in the commands object
-      const CustomScreen = cmds[cmdName]
+      const CustomScreen = commands[cmdName]
       if (CustomScreen) setScreen(<CustomScreen exit={() => setScreen(undefined)} params={frag.slice(2)} />)
     }
     // If command is not interactive
     else {
-      const code = cmds[cmdName]
+      const code = commands[cmdName]
       if (code) {
         switch (typeof code) {
           // In commands is defined as an object (array, JSX, ...)

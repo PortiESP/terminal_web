@@ -6,9 +6,9 @@ import usePrompt from "./components/prompt/prompt"
 import { useEffect, useRef, useState } from "react"
 
 /**
- * Create a fake terminal that looks like a regular terminal emulator but with custom shell commands
+ * This component allows us to create a fake terminal with custom shell commands and keybinds
  *
- * @param {String} prefix
+ * @param {String} prefix -
  * @param {Array of Strings} initialMessage
  * @param {Array of Functions} keybinds
  * @param {Object} commands

@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef, useEffect } from "react"
+import { useCallback, useState, useRef } from "react"
 import scss from "./prompt.module.scss"
 import useTimer from "../../hooks/use_timer"
 import useTerminalCommands from "../../hooks/use_terminal_commands"
@@ -6,25 +6,27 @@ import useSuggestions from "./use_suggestions"
 import useCommandHistory from "./use_command_history"
 
 /**
- * This component will create an input where we can run callbacks based on custom keybinds, the ENTER key have a dedicated props for its event as `callback`
+ * This hook will create an input and a function that when provided to a ListenerProvider (useKBDListener hook) it can make the input react to some events
  *
  * @param {*} props
  * @param {String||JSXElement} props.prefix - Information printed before the prompt input (same line)
  * @param {Function} props.enter - Function called when the user presses the ENTER key
  * @param {Object} props.keybinds - Custom keybinds object. The keys correspond to the keybind, and the value must be a callback function
  * @param {Ref} props.inputRef - (Output) This parameter will take a useRef hook that will be linked to the input tag
- * @returns {JSXElement}
- * 
- * Example of the keybinds object
- * ```
-  const binds = {
-    ctrl_c: () => console.log("Keystroke ctrl+c"),
-    p: () => console.log("Keystroke p"),
-  }
- * ```
- * 
+ * @returns {Object}
+ *  - {Function} - A predefined callback function that handles prompt related input events (this callback is provided to the ListenerProvider component from useKBDListener() hook)
+ *  - {Component} - The prompt component of the terminal
+ *
+ * > Example of the keybinds object
+ * > ```
+ * > const binds = {
+ * >   ctrl_c: () => console.log("Keystroke ctrl+c"),
+ * >   p: () => console.log("Keystroke p"),
+ * > }
+ * > ```
+ *
  */
-export default function usePrompt({ pipes, keybinds, prefix, commands, setScreen, ...props }) {
+export default function usePrompt({ pipes, keybinds, prefix, commands, setScreen }) {
   // Input state
   const [input, setInput] = useState("")
   // Input command history
@@ -128,7 +130,7 @@ export default function usePrompt({ pipes, keybinds, prefix, commands, setScreen
   }
 }
 
-// Prompt logged to stdout component
+// Component that will be pushed to the stdoud history with special styles
 function OldPrompt(props) {
   return (
     <span className={scss.flag__old_prompt}>
