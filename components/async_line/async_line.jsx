@@ -39,7 +39,7 @@ export default function AsyncLine(props) {
 
   // Updated the rendered content
   useEffect(() => {
-    // Determine the callback to handle the async behaviour
+    // Determine the callback to handle the async behavior
     const stopInterval = setTimeout(
       () => {
         // Get next value from the generator

@@ -27,7 +27,6 @@ export default function useTerminalCommands(commands, options) {
     // Check if command exists
     const frag = cmd.split(" ")
     const cmdName = frag[0] !== "run" ? frag[0] : frag.slice(0, 2).join(" ")
-    console.log(frag, cmdName)
     if (!commands[cmdName]) {
       pipes.stdin(commands.error)
       return
@@ -44,7 +43,6 @@ export default function useTerminalCommands(commands, options) {
     // If command is not interactive
     else {
       const code = commands[cmdName]
-      console.log(code)
       if (code) {
         switch (typeof code) {
           // In commands is defined as an object (array, JSX, ...)
