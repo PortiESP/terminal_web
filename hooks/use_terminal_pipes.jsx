@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react"
 
 /**
- * Use this hook to create a manager fort the historial of the Termial
+ * Use this hook to create a manager fort the historial of the terminal
  *
  * @param {Array} initial - Array of strings that will be part of the initial array instead of having an empty array
  * @param {Function} callback - A function that will be called when a the stdout is altered, the function will be called and the new line will be passed as a parameter, or `undefined` if the stdout was cleaned (the call is made before the new lines are rendered!!!)

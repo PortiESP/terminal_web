@@ -58,7 +58,7 @@ const frameStyle = {
 /**
  * Converts a DOM Event object into a string that represents the keybind: Examples: ctrl_c | ctrl_shift_c | w | alt_w | space
  *
- * > This funtion will append as a prefix the strings 'ctrl_', 'shift_', 'alt_', in their respective cases, also the SPACE key is refered as 'space'
+ * > This function will append as a prefix the strings 'ctrl_', 'shift_', 'alt_', in their respective cases, also the SPACE key is referred as 'space'
  * > Every character is returned in lowercase, even if the shift key is pressed or mayus actived
  *
  * @param {SyntheticEvent} e - Keyboard DOM Event

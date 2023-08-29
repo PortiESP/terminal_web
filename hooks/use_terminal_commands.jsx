@@ -9,7 +9,7 @@ const INTERACTIVE_PREFIX = "run"
  *  - If we define a command as a function, the function will receive the pipes object (useTerminalPipes)
  *
  * IMPORTANT: If we name a command with the prefix `run`, the command must be a React component function (just the function name, NOT in JSX), which will receive 2 props:
- *  - props.exit - A funtion that must we executed when we want to exit and go back to the default prompt
+ *  - props.exit - A function that must we executed when we want to exit and go back to the default prompt
  *  - props.params - An array of params provided by the command after the command name: Example `run myCommand 1 2 3`, the params will be [1, 2, 3]
  *
  * @param {Object} cmds - This parameter takes an object with the keys as the exact name of the commands
@@ -18,7 +18,7 @@ const INTERACTIVE_PREFIX = "run"
  */
 export default function useTerminalCommands(commands, options) {
   const run = useCallback((cmd) => {
-    // If input was empty, dont do anything
+    // If input was empty, don't do anything
     if (!cmd) return
 
     // Destructure the screen management methods
@@ -36,7 +36,7 @@ export default function useTerminalCommands(commands, options) {
     if (frag[0] === INTERACTIVE_PREFIX) {
       // Clean stdout
       pipes.cleanBuffer()
-      // Find the matchind command in the commands object
+      // Find the matching command in the commands object
       const CustomScreen = commands[cmdName]
       if (CustomScreen) setScreen(<CustomScreen exit={() => setScreen(undefined)} params={frag.slice(2)} />)
     }
