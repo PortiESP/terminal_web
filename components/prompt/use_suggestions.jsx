@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react"
 
+const ERROR = "error"
+
 /**
  * This hook is used to parse a string and make a suggestion from the keys of an object
  *
@@ -17,7 +19,7 @@ export default function useSuggestions(inputState, availableCommands) {
           .filter((cmd) => RegExp(`^${inputState}.`).test(cmd))
           .pop()
       : undefined
-    setSuggested(result)
+    setSuggested(result !== ERROR ? result : undefined) // Do not autocomplete with error command
   }, [inputState])
 
   return suggested
