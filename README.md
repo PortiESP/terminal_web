@@ -10,13 +10,15 @@ This React component will generate a CLI with custom shell commands
 - 🎮 Interactive shell
 - 📝 Command autocompletion
 - 🎨 Colors
-- ✍🏻 Typing effects
+- ⌨ Typing effects
 - 📜 Commands history
 - 🏹 Keybinds
 
 ### Code features
 
+- 📔 Documented components
 - ♻ Reutilizable code
+- 🧪 Tested code (test files included)
 
 
 ## 📥 How to implement?
@@ -49,4 +51,9 @@ const commands = {
 </div>
 ```
 
+## 🕷 Known bugs
 
+> If you discover some bug that is not included in this list, please contact me or make a **pull request**
+
+1. Output text is not selectable
+2. Async line component wont work with nested JSX tags
