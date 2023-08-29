@@ -123,7 +123,12 @@ export default function usePrompt({ pipes, keybinds, prefix, commands, setScreen
             </pre>
           ))}
           <span className={scss.caret} style={{ order: caretOffset }} ref={$caret} />
-          {suggested && <span className={scss.span__suggested}> [tab] {suggested}</span>}
+          {suggested && (
+            <span className={scss.span__suggested} onClick={() => setInput(suggested)}>
+              {" "}
+              [tab] {suggested}
+            </span>
+          )}
         </div>
       </pre>
     ),
