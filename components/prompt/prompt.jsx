@@ -42,7 +42,7 @@ export default function usePrompt({ pipes, keybinds, prefix, commands, setScreen
   // Command suggestions
   const suggested = useSuggestions(input, commands)
   // Responsive context
-  const { MobileRender, isMobile } = useMobile()
+  const { MobileRender } = useMobile()
 
   // Handle kbd events
   const handleKeyEvent = useCallback(
@@ -116,7 +116,7 @@ export default function usePrompt({ pipes, keybinds, prefix, commands, setScreen
     Prompt: () => (
       <>
         <pre className={scss.prompt}>
-          <input autoFocus={!isMobile} value={input} onChange={(e) => setInput(e.target.value)} name="prompt" />
+          <input autoFocus value={input} onChange={(e) => setInput(e.target.value)} name="prompt" />
           <p className={scss.p__input}>
             {prefix}
             {input}
