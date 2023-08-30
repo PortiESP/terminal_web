@@ -32,8 +32,8 @@ export default function useTerminalCommands(commands, options) {
       return
     }
 
-    // If command is interactive
-    if (frag[0] === INTERACTIVE_PREFIX) {
+    // If command is interactive, or its the `shutdown` command
+    if (frag[0] === INTERACTIVE_PREFIX || frag[0] === "shutdown") {
       // Clean stdout
       pipes.cleanBuffer()
       // Find the matching command in the commands object
