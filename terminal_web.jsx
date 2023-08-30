@@ -20,15 +20,15 @@ export default function TerminalWeb({ prefix, commands, ...props }) {
   const { ListenerProvider } = useKBDListener()
 
   // Prompt settings
-  const promptSettings = {
+  const { eventHandler, Prompt } = usePrompt({
     keybinds: { ctrl_l: pipes.cleanBuffer, ...props.keybinds },
     prefix,
     pipes,
     commands,
     setScreen: setCustomScreen,
-  }
-  const { eventHandler, Prompt } = usePrompt(promptSettings)
+  })
 
+  // Scroll every time the user hits ENTER
   useEffect(() => {
     $terminal.current.scrollBy(0, 999999)
   }, [pipes.stdout])
