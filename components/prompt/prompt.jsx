@@ -115,11 +115,17 @@ export default function usePrompt({ pipes, keybinds, prefix, commands, setScreen
     eventHandler: handleKeyEvent,
     Prompt: () => (
       <>
-        <pre className={scss.prompt}>
-          <input autoFocus value={input} onChange={(e) => setInput(e.target.value)} name="prompt" />
+        <pre className={scss.prompt} data-test="prompt">
+          <input
+            autoFocus
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            name="prompt"
+            data-test="prompt-input"
+          />
           <p className={scss.p__input}>
             {prefix}
-            {input}
+            <span data-test="prompt-output">{input}</span>
           </p>
           <div className={scss.div__layer_caret}>
             {(input + prefix).split("").map((_, i) => (
@@ -129,7 +135,7 @@ export default function usePrompt({ pipes, keybinds, prefix, commands, setScreen
             ))}
             <span className={scss.caret} style={{ order: caretOffset }} ref={$caret} />
             {suggested && (
-              <span className={scss.span__suggested} onClick={() => setInput(suggested)}>
+              <span className={scss.span__suggested} onClick={() => setInput(suggested)} data-test="suggestion">
                 {" "}
                 [tab] {suggested}
               </span>

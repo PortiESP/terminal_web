@@ -34,7 +34,7 @@ export default function TerminalWeb({ prefix, commands, ...props }) {
   }, [pipes.stdout])
 
   return (
-    <div className={scss.wrapper} ref={$terminal} id="terminal-scroll-area">
+    <div className={scss.wrapper} ref={$terminal} id="terminal-scroll-area" data-test="terminal">
       {customScreen || (
         <ListenerProvider callback={eventHandler}>
           <Lines lines={pipes.stdout}></Lines>
