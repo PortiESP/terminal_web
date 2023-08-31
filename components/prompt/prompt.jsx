@@ -137,11 +137,7 @@ export default function usePrompt({ pipes, keybinds, prefix, commands, setScreen
           </div>
         </pre>
         <MobileRender>
-          <MobileInterface
-            commands={(commands && Object.keys(commands)) || {}}
-            setInput={setInput}
-            handleKeyEvent={handleKeyEvent}
-          />
+          <MobileInterface commands={Object.keys(commands)} setInput={setInput} handleKeyEvent={handleKeyEvent} />
         </MobileRender>
       </>
     ),
