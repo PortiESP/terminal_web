@@ -1,4 +1,5 @@
-import { useCallback } from "react"
+import { useCallback, Suspense } from "react"
+import LoadingFallback from "../components/loading"
 
 const INTERACTIVE_PREFIX = "run"
 
@@ -38,7 +39,12 @@ export default function useTerminalCommands(commands, options) {
       pipes.cleanBuffer()
       // Find the matching command in the commands object
       const CustomScreen = commands[cmdName]
-      if (CustomScreen) setScreen(<CustomScreen exit={() => setScreen(undefined)} params={frag.slice(2)} />)
+      if (CustomScreen)
+        setScreen(
+          <Suspense fallback={<LoadingFallback />}>
+            <CustomScreen exit={() => setScreen(undefined)} params={frag.slice(2)} />
+          </Suspense>
+        )
     }
     // If command is not interactive
     else {
