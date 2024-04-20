@@ -14,6 +14,7 @@ import { useEffect, useRef, useState } from "react"
  * @param {Object} commands
  */
 export default function TerminalWeb({ prefix, commands, ...props }) {
+  console.log("TerminalWeb", prefix, commands, props)
   const pipes = useTerminalPipes(props.initialMessage)
   const $terminal = useRef(null)
   const [customScreen, setCustomScreen] = useState(false)
